@@ -16,6 +16,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import cors from 'cors';
 
 import Layout from '../Layout';
+import { GRAPHQL_API } from '../constant';
 
 const basePort = 3000 || process.env.PORT;
 
@@ -29,7 +30,7 @@ app.get('*', (req, res) => {
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
-      uri: 'https://48p1r2roz4.sse.codesandbox.io',
+      uri: GRAPHQL_API,
       // credentials: 'same-origin',
       fetch: nodeFetch,
       headers: {

@@ -1,8 +1,14 @@
-$red-color: black;
+$black-color: #000;
 
 .title {
-  color: $red-color;
+  color: $black-color;
   text-align: center;
+}
+
+.dollar-image {
+  display: block;
+  margin: auto;
+  margin-bottom: 25px;
 }
 
 .currency-item {

@@ -7,10 +7,11 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-boost';
 import Layout from '../Layout';
+import { GRAPHQL_API } from '../constant';
 
 const client = new ApolloClient({
   cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
-  uri: 'https://48p1r2roz4.sse.codesandbox.io',
+  uri: GRAPHQL_API,
 });
 
 const App = () => (
