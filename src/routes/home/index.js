@@ -1,11 +1,13 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import './home.style.scss';
 
 const EXCHANGE_RATES = gql`
   {
     rates(currency: "USD") {
       currency
+      name
       rate
     }
   }
@@ -19,12 +21,14 @@ function HomePage() {
 
   return (
     <div>
-      <h1>Home Page</h1>
-      {data.rates.map(({ currency, rate }) => (
+      <h1 className="title">Exchange of USD to other currencies in the world</h1>
+      {data.rates.map(({ currency, name, rate }) => (
         <div key={currency}>
-          <p>
-            {currency}: {rate}
-          </p>
+          <div className="currency-item">
+            <div className="currency-abbreviation">{currency}</div>
+            <div className="currency-name">{name}</div>
+            <div className="currency-rate">{rate}</div>
+          </div>
         </div>
       ))}
     </div>

@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+}
+
+.content {
+  padding: 10px;
+}
+
+.header {
+  width: 100%;
+  padding: 10px;
+  background: black;
+  box-sizing: border-box;
+
+  ul {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+    padding: 0;
+
+    li {
+      list-style-type: none;
+
+      a {
+        color: #ffffff;
+        text-decoration: none;
+      }
+    }
+  }
+}

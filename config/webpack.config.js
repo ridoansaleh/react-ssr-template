@@ -8,10 +8,19 @@ const browserConfig = {
   output: {
     path: path.resolve(__dirname, '..', 'dist'),
     filename: 'bundle.js',
-    publicPath: '/',
+    publicPath: '/static',
   },
   module: {
-    rules: [{ test: /\.(js)$/, use: 'babel-loader' }],
+    rules: [
+      {
+        test: /\.(js)$/,
+        use: 'babel-loader',
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+    ],
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -37,6 +46,18 @@ const serverConfig = {
       {
         test: /\.(js)$/,
         use: 'babel-loader',
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          {
+            loader: 'css-loader',
+            options: {
+              onlyLocals: true,
+            },
+          },
+          'sass-loader',
+        ],
       },
     ],
   },
