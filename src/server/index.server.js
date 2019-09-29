@@ -1,3 +1,5 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import path from 'path';
 import fs from 'fs';
 import nodeFetch from 'node-fetch';
@@ -21,7 +23,7 @@ const app = new express();
 
 app.use(cors());
 
-app.use(express.static('../../dist'));
+app.use('/static', express.static('dist'));
 
 app.get('*', (req, res) => {
   const client = new ApolloClient({

@@ -1,12 +1,13 @@
+import React from 'react';
 import { Route, Switch } from 'react-router';
 import { Link } from 'react-router-dom';
-import React from 'react';
+import './styles/index.scss';
 
 import routes from './routes';
 
 const Layout = () => (
   <div>
-    <nav>
+    <nav className="header">
       <ul>
         <li>
           <Link to="/">Home</Link>
@@ -16,11 +17,13 @@ const Layout = () => (
         </li>
       </ul>
     </nav>
-    <Switch>
-      {routes.map(route => (
-        <Route key={route.name} {...route} />
-      ))}
-    </Switch>
+    <div className="content">
+      <Switch>
+        {routes.map(route => (
+          <Route key={route.name} {...route} />
+        ))}
+      </Switch>
+    </div>
   </div>
 );
 

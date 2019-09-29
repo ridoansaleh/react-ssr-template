@@ -1,0 +1,30 @@
+$red-color: black;
+
+.title {
+  color: $red-color;
+  text-align: center;
+}
+
+.currency-item {
+  display: flex;
+  justify-content: space-between;
+  width: 500px;
+  margin: auto;
+  padding: 5px;
+  color: #fff;
+}
+
+.currency-abbreviation {
+  background: #ff46ff;
+  width: 20%;
+}
+
+.currency-name {
+  background: #0046ff;
+  width: 60%;
+}
+
+.currency-rate {
+  background: #ff4600;
+  width: 20%;
+}
