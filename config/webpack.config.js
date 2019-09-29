@@ -20,6 +20,13 @@ const browserConfig = {
         test: /\.s[ac]ss$/i,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        loader: 'file-loader',
+        options: {
+          publicPath: 'static',
+        },
+      },
     ],
   },
   plugins: [
@@ -58,6 +65,14 @@ const serverConfig = {
           },
           'sass-loader',
         ],
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        loader: 'file-loader',
+        options: {
+          emitFile: false,
+          publicPath: 'static',
+        },
       },
     ],
   },
