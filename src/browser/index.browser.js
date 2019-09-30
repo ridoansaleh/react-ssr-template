@@ -2,6 +2,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import React from 'react';
 import { hydrate } from 'react-dom';
+import Loadable from 'react-loadable';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -22,4 +23,6 @@ const App = () => (
   </ApolloProvider>
 );
 
-hydrate(<App />, document.getElementById('root'));
+Loadable.preloadReady().then(() => {
+  hydrate(<App />, document.getElementById('root'));
+});

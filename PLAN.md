@@ -4,7 +4,7 @@
 2. [x] react-apollo binding to webpack ?
 3. [x] sass and file-loader
 4. [x] babel-polyfill
-5. [ ] split vendor libs from main bundle
+5. [x] split vendor libs from main bundle
 6. [ ] mini-css-extract-plugin
 7. [ ] HMR
 8. [ ] npm scripts for dev and production
