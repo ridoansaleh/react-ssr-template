@@ -6,6 +6,8 @@ import nodeFetch from 'node-fetch';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import Loadable from 'react-loadable';
+// import { getBundles } from 'react-loadable/webpack';
 import { ApolloProvider } from '@apollo/react-common';
 import { getDataFromTree } from '@apollo/react-ssr';
 import { ApolloClient } from 'apollo-client';
@@ -20,7 +22,7 @@ import { GRAPHQL_API } from '../constant';
 
 const basePort = 3000 || process.env.PORT;
 
-const app = new express();
+const app = express();
 
 app.use(cors());
 
@@ -41,22 +43,27 @@ app.get('*', (req, res) => {
   });
 
   const context = {};
+  const modules = [];
 
   const App = (
     <ApolloProvider client={client}>
       <StaticRouter location={req.url} context={context}>
-        <Layout />
+        <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+          <Layout />
+        </Loadable.Capture>
       </StaticRouter>
     </ApolloProvider>
   );
 
   getDataFromTree(App)
     .then(() => {
+      // const stats = require('../../dist/react-loadable.json');
+
       const content = ReactDOMServer.renderToString(App);
 
-      const initialState = client.extract();
+      // let bundles = getBundles(stats, modules);
 
-      console.log('initialState : ', JSON.stringify(initialState));
+      const initialState = client.extract();
 
       const indexFile = path.resolve('./dist/index.html');
 
@@ -67,7 +74,7 @@ app.get('*', (req, res) => {
           res.send('Oops, better luck next time!');
           res.end();
         }
-        console.log('data : ', data);
+
         data = data.replace('<div id="root"></div>', `<div id="root">${content}</div>`);
         data = data.replace(
           `<div id="script"></div>`,
@@ -75,14 +82,25 @@ app.get('*', (req, res) => {
             window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
           </script>`,
         );
-        res.status(200);
-        res.send(data);
-        res.end();
+        // data = data.replace(
+        //   '<div id="route-split></div>',
+        //   ` ${bundles
+        //     .map(bundle => {
+        //       return `<script src="${bundle.publicPath}/${bundle.file}"></script>`;
+        //     })
+        //     .join('\n')}`,
+        // );
+        res
+          .status(200)
+          .send(data)
+          .end();
       });
     })
     .catch(err => console.log(err));
 });
 
-app.listen(basePort, () => {
-  console.log(`Application Server is now running on http://localhost:${basePort}`);
+Loadable.preloadAll().then(() => {
+  app.listen(basePort, () => {
+    console.log(`Application Server is now running on http://localhost:${basePort}`);
+  });
 });
