@@ -1,18 +1,19 @@
 ## Bundler / Tasks List
 
-1. [x] create webpack config files for server and client
-2. [x] react-apollo binding to webpack ?
+1. [x] create webpack config files for `server` and `client`
+2. [x] react-apollo
 3. [x] sass and file-loader
 4. [x] babel-polyfill
 5. [x] split vendor libs from main bundle
-6. [ ] mini-css-extract-plugin
-7. [ ] HMR
-8. [ ] npm scripts for dev and production
-9. [ ] deploy to Heroku
+6. [x] route based splitting
+7. [x] mini-css-extract-plugin
+8. [ ] HMR
+9. [ ] npm scripts for dev and production
+10. [ ] deploy to Heroku
 
-- Evaluations
+#### Evaluations
 
-* use core-js instead of babel-polyfill
+- use core-js instead of babel-polyfill
 
 ## From Server
 
