@@ -25,3 +25,12 @@
 6. Hydrate on the client (add eventListener)
 7. If user is login, redirect to Home page (useContext)
 8. If user is NOT login, redirect to Login page
+
+## Webpack Dev Middleware
+
+1. bundle client inside of server (development)
+2. use `webpack-hot-middleware` for HMR
+3. spits html (and React component) from server
+4. the html file used in server is from webpack client (HtmlWebpackPlugin)
+5. does server (nodejs) understand React, CSS, image etc?
+6. or do we need to transpile it again using webpack?

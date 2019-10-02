@@ -8,7 +8,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 
 const browserConfig = {
   mode: process.env.NODE_ENV,
-  entry: './src/browser/index.browser.js',
+  entry: ['webpack-hot-middleware/client', './src/browser/index.browser.js'],
   output: {
     path: path.resolve(__dirname, '..', 'dist'),
     filename: 'bundle.js',
@@ -36,13 +36,14 @@ const browserConfig = {
     ],
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       __isBrowser__: 'true',
     }),
     // new CompressionPlugin(),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../src/template/index.html'),
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: path.resolve(__dirname, '../src/template/index.html'),
+    // }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',

@@ -1,19 +1,21 @@
 import React from 'react';
-import Loadable from 'react-loadable';
+// import Loadable from 'react-loadable';
+import HomeComponent from './home';
+import AnotherComponent from './another-page';
 
-const HomeComponent = Loadable({
-  loader: () => import('./home' /* webpackChunkName: 'home' */),
-  loading() {
-    return <div>Loading...</div>;
-  },
-});
+// const HomeComponent = Loadable({
+//   loader: () => import('./home' /* webpackChunkName: 'home' */),
+//   loading() {
+//     return <div>Loading...</div>;
+//   },
+// });
 
-const AnotherComponent = Loadable({
-  loader: () => import('./another-page' /* webpackChunkName: 'another-page' */),
-  loading() {
-    return <div>Loading...</div>;
-  },
-});
+// const AnotherComponent = Loadable({
+//   loader: () => import('./another-page' /* webpackChunkName: 'another-page' */),
+//   loading() {
+//     return <div>Loading...</div>;
+//   },
+// });
 
 const routes = [
   {

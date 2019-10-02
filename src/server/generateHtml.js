@@ -1,34 +1,24 @@
 // import 'core-js/stable';
 // import 'regenerator-runtime/runtime';
-const path = require('path');
-const fs = require('fs');
-const nodeFetch = require('node-fetch');
+import path from 'path';
+import fs from 'fs';
+import nodeFetch from 'node-fetch';
 
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const Loadable = require('react-loadable');
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+// import Loadable from 'react-loadable';
 // import { getBundles } from 'react-loadable/webpack';
-const { ApolloProvider } = require('@apollo/react-common');
-const { getDataFromTree } = require('@apollo/react-ssr');
-const { ApolloClient } = require('apollo-client');
-const { createHttpLink } = require('apollo-link-http');
-const express = require('express');
-const { StaticRouter } = require('react-router');
-const { InMemoryCache } = require('apollo-cache-inmemory');
-const cors = require('cors');
+import { ApolloProvider } from '@apollo/react-common';
+import { getDataFromTree } from '@apollo/react-ssr';
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { StaticRouter } from 'react-router';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const Layout = require('../Layout');
-const { GRAPHQL_API } = require('../constant');
+import Layout from '../Layout';
+import { GRAPHQL_API } from '../constant';
 
-const basePort = 3000 || process.env.PORT;
-
-const app = express();
-
-app.use(cors());
-
-app.use('/static', express.static('dist'));
-
-app.get('*', (req, res) => {
+function generateHtml(req, res) {
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
@@ -48,9 +38,9 @@ app.get('*', (req, res) => {
   const App = (
     <ApolloProvider client={client}>
       <StaticRouter location={req.url} context={context}>
-        <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-          <Layout />
-        </Loadable.Capture>
+        {/* <Loadable.Capture report={moduleName => modules.push(moduleName)}> */}
+        <Layout />
+        {/* </Loadable.Capture> */}
       </StaticRouter>
     </ApolloProvider>
   );
@@ -77,8 +67,8 @@ app.get('*', (req, res) => {
         data = data.replace(
           `<div id="script"></div>`,
           `<script>
-            window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
-          </script>`,
+                window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
+              </script>`,
         );
         // data = data.replace(
         //   '<div id="route-split></div>',
@@ -92,10 +82,6 @@ app.get('*', (req, res) => {
       });
     })
     .catch(err => console.log(err));
-});
+}
 
-Loadable.preloadAll().then(() => {
-  app.listen(basePort, () => {
-    console.log(`Application Server is now running on http://localhost:${basePort}`);
-  });
-});
+export default generateHtml;

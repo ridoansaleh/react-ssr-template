@@ -5,7 +5,7 @@ const nodeExternals = require('webpack-node-externals');
 
 const serverConfig = {
   mode: process.env.NODE_ENV,
-  entry: './src/server/index.server.js',
+  entry: './src/server/generateHtml.js',
   target: 'node',
   externals: [nodeExternals()],
   output: {
