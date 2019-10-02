@@ -1,5 +1,6 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
+import { hot } from 'react-hot-loader/root';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import Loadable from 'react-loadable';
@@ -23,6 +24,8 @@ const App = () => (
   </ApolloProvider>
 );
 
+const HotApp = hot(App);
+
 Loadable.preloadReady().then(() => {
-  hydrate(<App />, document.getElementById('root'));
+  hydrate(<HotApp />, document.getElementById('root'));
 });
