@@ -8,7 +8,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 
 const browserConfig = {
   mode: process.env.NODE_ENV,
-  entry: './src/browser/index.browser.js',
+  entry: ['react-hot-loader/patch', './src/browser/index.browser.js'],
   output: {
     path: path.resolve(__dirname, '..', 'dist'),
     filename: 'bundle.js',
@@ -18,9 +18,14 @@ const browserConfig = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
+        test: /\.js$/,
         use: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        include: /node_modules/,
+        use: 'react-hot-loader/webpack',
       },
       {
         test: /\.s[ac]ss$/i,
@@ -52,6 +57,11 @@ const browserConfig = {
     }),
     new ManifestPlugin(),
   ],
+  resolve: {
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
+  },
   optimization: {
     splitChunks: {
       chunks: 'all',

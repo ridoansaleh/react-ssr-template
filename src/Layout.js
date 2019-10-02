@@ -10,7 +10,7 @@ const Layout = () => (
     <nav className="header">
       <ul>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/">Home (New)</Link>
         </li>
         <li>
           <Link to="/another">Another page</Link>

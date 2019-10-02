@@ -1,5 +1,5 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
 import path from 'path';
 import fs from 'fs';
 import nodeFetch from 'node-fetch';

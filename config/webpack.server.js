@@ -5,7 +5,7 @@ const nodeExternals = require('webpack-node-externals');
 
 const serverConfig = {
   mode: process.env.NODE_ENV,
-  entry: './src/server/index.server.js',
+  entry: ['react-hot-loader/patch', './src/server/index.server.js'],
   target: 'node',
   externals: [nodeExternals()],
   output: {
@@ -20,6 +20,11 @@ const serverConfig = {
         test: /\.(js)$/,
         use: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        include: /node_modules/,
+        use: 'react-hot-loader/webpack',
       },
       {
         test: /\.s[ac]ss$/i,
