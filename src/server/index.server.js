@@ -1,26 +1,26 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-import path from 'path';
 import fs from 'fs';
 import nodeFetch from 'node-fetch';
+import express from 'express';
+import cors from 'cors';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { StaticRouter, matchPath } from 'react-router';
 import Loadable from 'react-loadable';
-// import { getBundles } from 'react-loadable/webpack';
+import { getBundles } from 'react-loadable/webpack';
 import { ApolloProvider } from '@apollo/react-common';
 import { getDataFromTree } from '@apollo/react-ssr';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
-import express from 'express';
-import { StaticRouter } from 'react-router';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import cors from 'cors';
 
 import Layout from '../Layout';
 import { GRAPHQL_API } from '../constant';
+import webpackConfig from '../../config/webpack.client';
+import routes from '../routes';
+import stats from '../../dist/react-loadable.json';
 
-const basePort = 3000 || process.env.PORT;
+const PORT = 3000 || process.env.PORT;
 
 const app = express();
 
@@ -29,6 +29,9 @@ app.use(cors());
 app.use('/static', express.static('dist'));
 
 app.get('*', (req, res) => {
+  const context = {};
+  const modules = [];
+
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
@@ -42,8 +45,8 @@ app.get('*', (req, res) => {
     cache: new InMemoryCache(),
   });
 
-  const context = {};
-  const modules = [];
+  routes.pop();
+  const isRouteMatch = routes.some(route => matchPath(req.path, route));
 
   const App = (
     <ApolloProvider client={client}>
@@ -57,50 +60,61 @@ app.get('*', (req, res) => {
 
   getDataFromTree(App)
     .then(() => {
-      // const stats = require('../../dist/react-loadable.json');
-
-      const content = ReactDOMServer.renderToString(App);
-
-      // let bundles = getBundles(stats, modules);
-
       const initialState = client.extract();
+      const content = ReactDOMServer.renderToString(App);
+      // console.log('modules : ', modules);
+      const serverBundles = getBundles(stats, modules);
+      // console.log('serverBundles : ', serverBundles);
+      const clientBundles = fs.readdirSync('dist');
+      // console.log('clientBundles : ', clientBundles);
+      const { output } = webpackConfig;
 
-      const indexFile = path.resolve('./dist/index.html');
-
-      fs.readFile(indexFile, 'utf8', (err, data) => {
-        if (err) {
-          console.error('Something went wrong:', err);
-          res.status(500);
-          res.send('Oops, better luck next time!');
-          res.end();
-        }
-
-        data = data.replace('<div id="root"></div>', `<div id="root">${content}</div>`);
-        data = data.replace(
-          `<div id="script"></div>`,
-          `<script>
-            window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
-          </script>`,
-        );
-        // data = data.replace(
-        //   '<div id="route-split></div>',
-        //   ` ${bundles
-        //     .map(bundle => {
-        //       return `<script src="${bundle.publicPath}/${bundle.file}"></script>`;
-        //     })
-        //     .join('\n')}`,
-        // );
-        res
-          .status(200)
-          .send(data)
-          .end();
-      });
+      const htmlTemplate = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <title>React SSR Wakeup</title>
+            <link rel="manifest" href="${output.publicPath}manifest.json" />
+            <link rel="shortcut icon" href="${output.publicPath}icons/favicon.png">
+            ${clientBundles
+              .filter(file => file.endsWith('.css'))
+              .map(cssFile => {
+                return `<link rel="stylesheet" type="text/css" href="${output.publicPath}${cssFile}">`;
+              })
+              .join('\n')}
+          </head>
+          <body>
+            <div id="root">${content}</div>
+            <script>
+              window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
+            </script>
+            ${clientBundles
+              .filter(file => file.endsWith('.js'))
+              .map(jsFile => {
+                return `<script src="${output.publicPath}${jsFile}"></script>`;
+              })
+              .join('\n')}
+            ${serverBundles
+              .map(bundle => {
+                return `<script src="${bundle.publicPath}/${bundle.file}"></script>`;
+              })
+              .join('\n')}
+          </body>
+        </html>
+      `;
+      if (isRouteMatch) {
+        res.status(200).send(htmlTemplate);
+      } else {
+        res.status(404).send(htmlTemplate);
+      }
     })
     .catch(err => console.log(err));
 });
 
 Loadable.preloadAll().then(() => {
-  app.listen(basePort, () => {
-    console.log(`Application Server is now running on http://localhost:${basePort}`);
+  app.listen(PORT, () => {
+    console.log(`Your amazing application is running on http://localhost:${PORT}`);
   });
 });

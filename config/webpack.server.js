@@ -9,7 +9,7 @@ const serverConfig = {
   target: 'node',
   externals: [nodeExternals()],
   output: {
-    path: path.resolve(__dirname, '..'),
+    path: path.resolve(__dirname, '..', 'dist'),
     filename: 'server.js',
     publicPath: '/',
     libraryTarget: 'commonjs2',

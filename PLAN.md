@@ -5,11 +5,12 @@
 3. [x] sass and file-loader
 4. [x] babel-polyfill
 5. [x] split vendor libs from main bundle
-6. [x] route based splitting
-7. [x] mini-css-extract-plugin
-8. [ ] HMR
-9. [ ] npm scripts for dev and production
-10. [ ] deploy to Heroku
+6. [x] mini-css-extract-plugin
+7. [x] npm scripts for dev and production
+8. [ ] react-helmet
+9. [ ] route based splitting
+10. [ ] HMR
+11. [ ] deploy to Heroku
 
 #### Evaluations
 
