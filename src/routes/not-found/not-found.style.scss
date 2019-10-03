@@ -1,0 +1,10 @@
+.not-found-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px);
+}
+
+.not-found-text {
+  color: #ff43cc;
+}

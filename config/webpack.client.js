@@ -1,10 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const CompressionPlugin = require('compression-webpack-plugin');
 const { ReactLoadablePlugin } = require('react-loadable/webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const browserConfig = {
   mode: process.env.NODE_ENV,
@@ -36,19 +38,25 @@ const browserConfig = {
     ],
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       __isBrowser__: 'true',
     }),
     // new CompressionPlugin(),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../src/template/index.html'),
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: path.resolve(__dirname, '../src/template/index.html'),
+    // }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
     new ReactLoadablePlugin({
       filename: './dist/react-loadable.json',
+    }),
+    new FaviconsWebpackPlugin({
+      logo: path.resolve('src/assets/puzzle.png'),
+      // outputPath: 'dist',
+      prefix: 'icons',
     }),
     new ManifestPlugin(),
   ],

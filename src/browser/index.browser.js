@@ -1,5 +1,3 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import Loadable from 'react-loadable';
