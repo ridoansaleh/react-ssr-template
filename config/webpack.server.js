@@ -44,6 +44,9 @@ const serverConfig = {
     ],
   },
   plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    }),
     new webpack.DefinePlugin({
       __isBrowser__: 'false',
     }),

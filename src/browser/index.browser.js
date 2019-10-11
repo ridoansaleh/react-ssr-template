@@ -1,7 +1,7 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
-import Loadable from 'react-loadable';
 import { BrowserRouter } from 'react-router-dom';
+import { loadableReady } from '@loadable/component';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-boost';
@@ -21,6 +21,6 @@ const App = () => (
   </ApolloProvider>
 );
 
-Loadable.preloadReady().then(() => {
+loadableReady(() => {
   hydrate(<App />, document.getElementById('root'));
 });

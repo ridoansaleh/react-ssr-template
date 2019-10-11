@@ -1,6 +1,8 @@
-import Home from './home';
-import Another from './another-page';
-import NotFound from './not-found';
+import loadable from '@loadable/component';
+
+const Home = loadable(() => import('./home'));
+const Another = loadable(() => import('./another-page'));
+const NotFound = loadable(() => import('./not-found'));
 
 const routes = [
   {
