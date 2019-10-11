@@ -3,10 +3,10 @@ const webpack = require('webpack');
 // const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const CompressionPlugin = require('compression-webpack-plugin');
-const { ReactLoadablePlugin } = require('react-loadable/webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const LoadablePlugin = require('@loadable/webpack-plugin');
 
 const browserConfig = {
   mode: process.env.NODE_ENV,
@@ -50,9 +50,7 @@ const browserConfig = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
-    new ReactLoadablePlugin({
-      filename: './dist/react-loadable.json',
-    }),
+    new LoadablePlugin(),
     new FaviconsWebpackPlugin({
       logo: path.resolve('src/assets/puzzle.png'),
       // outputPath: 'dist',

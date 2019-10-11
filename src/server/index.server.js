@@ -1,4 +1,4 @@
-import fs from 'fs';
+import path from 'path';
 import nodeFetch from 'node-fetch';
 import express from 'express';
 import cors from 'cors';
@@ -6,21 +6,22 @@ import cors from 'cors';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router';
-import Loadable from 'react-loadable';
-import { getBundles } from 'react-loadable/webpack';
 import { ApolloProvider } from '@apollo/react-common';
 import { getDataFromTree } from '@apollo/react-ssr';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ChunkExtractor } from '@loadable/server';
 
 import Layout from '../Layout';
 import { GRAPHQL_API } from '../constant';
 import webpackConfig from '../../config/webpack.client';
 import routes from '../routes';
-import stats from '../../dist/react-loadable.json';
+const statsFile = path.resolve('dist/loadable-stats.json');
 
 const PORT = 3000 || process.env.PORT;
+routes.pop();
+const validRoutes = routes;
 
 const app = express();
 
@@ -30,9 +31,9 @@ app.use('/static', express.static('dist'));
 
 app.get('*', (req, res) => {
   const context = {};
-  const modules = [];
+  const extractor = new ChunkExtractor({ statsFile });
 
-  const client = new ApolloClient({
+  const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
       uri: GRAPHQL_API,
@@ -45,29 +46,27 @@ app.get('*', (req, res) => {
     cache: new InMemoryCache(),
   });
 
-  routes.pop();
-  const isRouteMatch = routes.some(route => matchPath(req.path, route));
+  const isRouteMatch = validRoutes.some(route => matchPath(req.path, route));
 
-  const App = (
-    <ApolloProvider client={client}>
+  const App = () => (
+    <ApolloProvider client={apolloClient}>
       <StaticRouter location={req.url} context={context}>
-        <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-          <Layout />
-        </Loadable.Capture>
+        <Layout />
       </StaticRouter>
     </ApolloProvider>
   );
 
-  getDataFromTree(App)
+  const jsxContent = extractor.collectChunks(<App />);
+
+  getDataFromTree(jsxContent)
     .then(() => {
-      const initialState = client.extract();
-      const content = ReactDOMServer.renderToString(App);
-      // console.log('modules : ', modules);
-      const serverBundles = getBundles(stats, modules);
-      // console.log('serverBundles : ', serverBundles);
-      const clientBundles = fs.readdirSync('dist');
-      // console.log('clientBundles : ', clientBundles);
-      const { output } = webpackConfig;
+      const initialState = apolloClient.extract();
+      const content = ReactDOMServer.renderToString(jsxContent);
+      const { publicPath } = webpackConfig.output;
+
+      const scriptTags = extractor.getScriptTags();
+      const linkTags = extractor.getLinkTags();
+      const styleTags = extractor.getStyleTags();
 
       const htmlTemplate = `
         <!DOCTYPE html>
@@ -76,31 +75,17 @@ app.get('*', (req, res) => {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <title>React SSR Wakeup</title>
-            <link rel="manifest" href="${output.publicPath}manifest.json" />
-            <link rel="shortcut icon" href="${output.publicPath}icons/favicon.png">
-            ${clientBundles
-              .filter(file => file.endsWith('.css'))
-              .map(cssFile => {
-                return `<link rel="stylesheet" type="text/css" href="${output.publicPath}${cssFile}">`;
-              })
-              .join('\n')}
+            <link rel="manifest" href="${publicPath}manifest.json" />
+            <link rel="shortcut icon" href="${publicPath}icons/favicon.png">
+            ${styleTags}
+            ${linkTags}
           </head>
           <body>
             <div id="root">${content}</div>
             <script>
               window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')}
             </script>
-            ${clientBundles
-              .filter(file => file.endsWith('.js'))
-              .map(jsFile => {
-                return `<script src="${output.publicPath}${jsFile}"></script>`;
-              })
-              .join('\n')}
-            ${serverBundles
-              .map(bundle => {
-                return `<script src="${bundle.publicPath}/${bundle.file}"></script>`;
-              })
-              .join('\n')}
+            ${scriptTags}
           </body>
         </html>
       `;
@@ -113,8 +98,6 @@ app.get('*', (req, res) => {
     .catch(err => console.log(err));
 });
 
-Loadable.preloadAll().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Your amazing application is running on http://localhost:${PORT}`);
-  });
+app.listen(PORT, () => {
+  console.log(`Your amazing application is running on http://localhost:${PORT}`);
 });
