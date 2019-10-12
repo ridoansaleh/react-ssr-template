@@ -3,13 +3,13 @@
 1. [x] create webpack config files for `server` and `client`
 2. [x] react-apollo
 3. [x] sass and file-loader
-4. [x] babel-polyfill
-5. [x] split vendor libs from main bundle
-6. [x] mini-css-extract-plugin
-7. [x] npm scripts for dev and production
+4. [x] split vendor libs from main bundle
+5. [x] mini-css-extract-plugin
+6. [x] npm scripts for dev and production
+7. [x] route based splitting
 8. [ ] react-helmet
-9. [ ] route based splitting
-10. [ ] HMR
+9. [ ] babel-polyfill
+10. [ ] HMR (have tried)
 11. [ ] deploy to Heroku
 
 #### Evaluations

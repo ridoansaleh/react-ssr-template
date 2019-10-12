@@ -1,12 +1,12 @@
 {
-  "name": "react-ssr-wakeup",
+  "name": "react-ssr-template",
   "version": "1.0.0",
-  "description": "a simple react server-side rendering boilerplate",
+  "description": "a simple react server-side rendering template",
   "main": "",
   "scripts": {
     "build-dev:client": "cross-env NODE_ENV=development webpack --config ./config/webpack.client.js",
     "build-dev:server": "cross-env NODE_ENV=development webpack --config ./config/webpack.server.js",
-    "server-dev": "nodemon dist/server.js",
+    "server-dev": "node dist/server.js",
     "start-dev": "run-s build-dev:client build-dev:server server-dev",
     "build-prod:client": "cross-env NODE_ENV=production webpack --config ./config/webpack.client.js",
     "build-prod:server": "cross-env NODE_ENV=production webpack --config ./config/webpack.server.js",
@@ -18,7 +18,8 @@
     "rendering",
     "ssr",
     "react",
-    "boilerplate"
+    "boilerplate",
+    "template"
   ],
   "author": "ridoan saleh nasution",
   "license": "ISC",

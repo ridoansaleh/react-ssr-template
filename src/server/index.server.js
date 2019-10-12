@@ -74,7 +74,7 @@ app.get('*', (req, res) => {
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>React SSR Wakeup</title>
+            <title>React SSR Template</title>
             <link rel="manifest" href="${publicPath}manifest.json" />
             <link rel="shortcut icon" href="${publicPath}icons/favicon.png">
             ${styleTags}
